@@ -9,6 +9,8 @@
 import UIKit
 import SceneKit
 import ARKit
+import CoreML
+import Vision
 
 struct CollisionCategory: OptionSet {
     let rawValue: Int
@@ -44,6 +46,60 @@ class ViewController: UIViewController {
         sceneView.session.pause()
     }
     
+    func getTargetPosition () -> CGRect {
+        let request = VNDetectFaceRectanglesRequest { (request, error) in
+            if let error = error {
+                print("Failed to detect faces: \(error)")
+                return
+            }
+            request.results?.forEach({ (res) in
+                DispatchQueue.main.async {
+                    guard let faceObservations = res as? VNFaceObservation else { return }
+                    let target = faceObservations.boundingBox
+                    
+                }
+            })
+            
+        }
+        
+    }
+    
+    
+    
+//    fileprivate func draw (faces: [VNFaceObservation], onImageWithBounds bounds: CGRect) {
+//        CATransaction.begin()
+//        for observation in faces {
+////            let faceBox = boundingBox()
+////            let faceLayer = shapeLayer()
+//        }
+//    }
+//
+//    fileprivate func handleDetectedFaces (request: VNRequest?, error: Error?) {
+//        if let nsError = error as NSError? {
+//            print("Face detection error: \(nsError)")
+//            return
+//        }
+//        DispatchQueue.main.async {
+////            guard let drawLayer = self.pathLayer
+//            guard let results = request?.results as? [VNFaceObservation] else {
+//                return
+//            }
+////            self.draw()
+////            drawLayer().
+//        }
+//    }
+//
+//    fileprivate func handleDetectedFaceLandarks (request: VNRequest?, error: Error?) {
+//        if let nsError = error as NSError? {
+//            print("Face landmark detection error: \(nsError)")
+//            return
+//        }
+//    }
+//
+//    let landmarkLayer = CAShapeLayer()
+//    let landmarkPath =  CGMutablePath()
+    
+    
     func createMissle() -> SCNNode {
         var node = SCNNode()
         
@@ -65,7 +121,7 @@ class ViewController: UIViewController {
         
         node = createMissle()
         
-        let (direction, position) = self.getUserPosition()
+        let direction = self.getTargetPosition()
     }
 
     @IBAction func shotButton(_ sender: Any) {
